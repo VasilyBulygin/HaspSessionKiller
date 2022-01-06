@@ -1,3 +1,4 @@
+[![Build](https://github.com/VasilyBulygin/HaspSessionKiller/actions/workflows/dotnet.yml/badge.svg)](https://github.com/VasilyBulygin/HaspSessionKiller/actions/workflows/dotnet.yml) ![GitHub](https://img.shields.io/github/license/VasilyBulygin/HaspSessionKiller) ![GitHub top language](https://img.shields.io/github/languages/top/VasilyBulygin/HaspSessionKiller)
 # HaspSessionKiller
 Simple utility that kills all sessions connected to HASP service
 
