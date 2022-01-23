@@ -1,6 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace HaspSessionKiller
@@ -17,31 +20,21 @@ namespace HaspSessionKiller
                 port = customPort;
             }
             var address = $"http://localhost:{port}";
-            using var webClient = new WebClient();
-            webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:72.0) Gecko/20100101 Firefox/72.0");
-            webClient.Headers.Add("Accept", "*/*");
-            webClient.Headers.Add("Accept-Language", "ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3");
-            webClient.Headers.Add("Accept-Encoding", "gzip, deflate");
-            webClient.Headers.Add("Content-Type", "text/plain");
-            webClient.Headers.Add("Origin", address);
-            webClient.Headers.Add("Referer", $"{address}/_int_/sessions.html");
-            webClient.Headers.Add("Cookie", "hasplmlang=_int_");
-
-            var sessionsResponse = await webClient.DownloadStringTaskAsync($"{address}/_int_/tab_sessions.html");
-
-            using var reader = new JsonTextReader(new StringReader(sessionsResponse))
+            using var httpClient = new HttpClient();
+            var sessionsResponse = await httpClient.GetStreamAsync($"{address}/_int_/tab_sessions.html");
+            using var reader = new JsonTextReader(new StreamReader(sessionsResponse))
             {
                 SupportMultipleContent = true
-            }; 
+            };
             var serializer = new JsonSerializer();
             while (await reader.ReadAsync())
             {
                 try
                 {
                     var session = serializer.Deserialize<HaspSession>(reader);
-                    if (session is null)
+                    if (session?.sid is null)
                         continue;
-                    await webClient.UploadStringTaskAsync($"{address}/_int_/action.html", "POST", $"deletelogin={session.sid}");
+                    await httpClient.PostAsync($"{address}/_int_/action.html", new StringContent($"deletelogin={session.sid}"));
                 }
                 catch
                 {
