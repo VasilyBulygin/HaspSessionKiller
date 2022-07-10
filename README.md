@@ -6,4 +6,4 @@ Simple utility that kills all sessions connected to HASP service
 For building application execute `dotnet build` command.
 
 ## Usage
-Run `HaspSessionKiller.exe` to kill all connected to your HASP key sessions. By default, utility will try to connect to HASP service on port 1947. If you have different service port configuration then simply add specific port number as a parameter.
+Run `HaspSessionKiller.exe` to kill all sessions connected to your HASP key. By default, utility will try to connect to HASP service on port 1947. If you have different service port configuration then simply add specific port number as a parameter.
